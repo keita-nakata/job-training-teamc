@@ -1,122 +1,96 @@
-<!-- myapp/templates/myapp/api_test.html -->
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <title>APIテスト</title>
-</head>
-<body>
-  <h1>楽天APIテスト</h1>
+<p>現在のポイント: {{ user_points }} pt</p>
+<h2>今日のミッション状況</h2>
+<ul>
+  <li>市場ミッション:  {{ mission_status.ichiba|yesno:"達成,未達成" }}</li>
+  <li>ブックスミッション: {{ mission_status.books|yesno:"達成,未達成" }}</li>
+  <li>ゲームズミッション: {{ mission_status.games|yesno:"達成,未達成" }}</li>
+</ul>
 
-  <!-- 楽天市場 検索フォーム -->
-  <section>
-    <h2>楽天市場で検索</h2>
-    <form method="post">
-      {% csrf_token %}
-      <input type="hidden" name="form_type" value="ichiba" />
-      <input
-        type="text"
-        name="keyword"
-        placeholder="キーワードを入力"
-        value="{{ ichiba_search_keyword|default:'' }}"
-      />
-      <button type="submit">楽天市場を検索</button>
-    </form>
+<hr />
 
-    {% if ichiba_error_message %}
-      <p style="color: red">{{ ichiba_error_message }}</p>
-    {% endif %}
+<!-- 楽天市場 -->
+<section>
+  <h2>楽天市場で検索</h2>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="ichiba" />
+    <input type="text" name="keyword" value="{{ ichiba_search_keyword|default:'' }}" />
+    <button type="submit">楽天市場を検索</button>
+  </form>
 
-    {% if ichiba_items %}
-      <h3>検索結果（楽天市場）</h3>
-      <ul>
-        {% for item in ichiba_items %}
-          <li>
-            <a href="{{ item.itemUrl }}" target="_blank">
-              {{ item.itemName }}
-            </a>
-            <br />
-            価格: {{ item.itemPrice }} 円
-          </li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  </section>
+  {% if ichiba_error_message %}
+    <p style="color:red">{{ ichiba_error_message }}</p>
+  {% endif %}
 
-  <hr />
+  {% if ichiba_items %}
+    <ul>
+      {% for item in ichiba_items %}
+        <li>
+          <a href="{% url 'rakuten_redirect' %}?url={{ item.itemUrl|urlencode }}&mission=ichiba" target="_blank">
+            {{ item.itemName }}
+          </a>
+          （{{ item.itemPrice }} 円）
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</section>
 
-  <!-- 楽天ブックス 検索フォーム -->
-  <section>
-    <h2>楽天ブックスで検索</h2>
-    <form method="post">
-      {% csrf_token %}
-      <input type="hidden" name="form_type" value="books" />
-      <input
-        type="text"
-        name="keyword"
-        placeholder="本のタイトルなどを入力"
-        value="{{ books_search_keyword|default:'' }}"
-      />
-      <button type="submit">楽天ブックスを検索</button>
-    </form>
+<hr />
 
-    {% if books_error_message %}
-      <p style="color: red">{{ books_error_message }}</p>
-    {% endif %}
+<!-- 楽天ブックス -->
+<section>
+  <h2>楽天ブックスで検索</h2>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="books" />
+    <input type="text" name="keyword" value="{{ books_search_keyword|default:'' }}" />
+    <button type="submit">楽天ブックスを検索</button>
+  </form>
 
-    {% if books_items %}
-      <h3>検索結果（楽天ブックス）</h3>
-      <ul>
-        {% for book in books_items %}
-          <li>
-            <a href="{{ book.itemUrl }}" target="_blank">
-              {{ book.title }}
-            </a>
-            <br />
-            著者: {{ book.author }}<br />
-            出版社: {{ book.publisherName }}<br />
-            価格: {{ book.itemPrice }} 円
-          </li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  </section>
+  {% if books_error_message %}
+    <p style="color:red">{{ books_error_message }}</p>
+  {% endif %}
 
-    <hr />
-    <!-- 楽天ゲーム 検索フォーム -->
-    <section>
-      <h2>楽天ゲームで検索</h2>
-      <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="form_type" value="games" />
-        <input
-          type="text"
-          name="keyword"
-          placeholder="ゲームタイトルなどを入力"
-          value="{{ games_search_keyword|default:'' }}"
-        />
-        <button type="submit">楽天ゲームを検索</button>
-      </form>
+  {% if books_items %}
+    <ul>
+      {% for book in books_items %}
+        <li>
+          <a href="{% url 'rakuten_redirect' %}?url={{ book.itemUrl|urlencode }}&mission=books" target="_blank">
+            {{ book.title }}
+          </a>
+          （{{ book.itemPrice }} 円）
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</section>
 
-      {% if games_error_message %}
-        <p style="color: red">{{ games_error_message }}</p>
-      {% endif %}
+<hr />
 
-      {% if games_items %}
-        <h3>検索結果（楽天ゲーム）</h3>
-        <ul>
-          {% for game in games_items %}
-            <li>
-              <a href="{{ game.itemUrl }}" target="_blank">
-                {{ game.title }}
-              </a>
-              <br />
-              メーカー: {{ game.publisherName }}<br />
-              価格: {{ game.itemPrice }} 円
-            </li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    </section>
-</body>
-</html>
+<!-- 楽天ゲームズ -->
+<section>
+  <h2>楽天ゲームズで検索</h2>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="games" />
+    <input type="text" name="keyword" value="{{ games_search_keyword|default:'' }}" />
+    <button type="submit">楽天ゲームズを検索</button>
+  </form>
+
+  {% if games_error_message %}
+    <p style="color:red">{{ games_error_message }}</p>
+  {% endif %}
+
+  {% if games_items %}
+    <ul>
+      {% for g in games_items %}
+        <li>
+          <a href="{% url 'rakuten_redirect' %}?url={{ g.itemUrl|urlencode }}&mission=games" target="_blank">
+            {{ g.title }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</section>
