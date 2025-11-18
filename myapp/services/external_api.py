@@ -2,7 +2,7 @@
 import requests
 from django.conf import settings
 
-ICHIBA_URL = "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706"
+ICHIBA_URL = "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601"
 BOOKS_URL = "https://app.rakuten.co.jp/services/api/BooksTotal/Search/20170404"
 
 
