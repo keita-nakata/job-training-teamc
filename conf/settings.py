@@ -122,3 +122,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# RAKUTEN_APP_ID = os.environ.get("RAKUTEN_APP_ID")
+RAKUTEN_APP_ID = "1078327554581727238"

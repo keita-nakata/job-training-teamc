@@ -1,0 +1,15 @@
+<form method="post">
+  {% csrf_token %}
+  <input type="text" name="keyword" value="{{ search_keyword|default:'' }}">
+  <button type="submit">検索</button>
+</form>
+
+{% if error_message %}
+  <p style="color:red">{{ error_message }}</p>
+{% endif %}
+
+<ul>
+  {% for item in items %}
+    <li>{{ item.itemName }}</li>
+  {% endfor %}
+</ul>
