@@ -81,5 +81,42 @@
       </ul>
     {% endif %}
   </section>
+
+    <hr />
+    <!-- 楽天ゲーム 検索フォーム -->
+    <section>
+      <h2>楽天ゲームで検索</h2>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="games" />
+        <input
+          type="text"
+          name="keyword"
+          placeholder="ゲームタイトルなどを入力"
+          value="{{ games_search_keyword|default:'' }}"
+        />
+        <button type="submit">楽天ゲームを検索</button>
+      </form>
+
+      {% if games_error_message %}
+        <p style="color: red">{{ games_error_message }}</p>
+      {% endif %}
+
+      {% if games_items %}
+        <h3>検索結果（楽天ゲーム）</h3>
+        <ul>
+          {% for game in games_items %}
+            <li>
+              <a href="{{ game.itemUrl }}" target="_blank">
+                {{ game.title }}
+              </a>
+              <br />
+              メーカー: {{ game.publisherName }}<br />
+              価格: {{ game.itemPrice }} 円
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </section>
 </body>
 </html>
