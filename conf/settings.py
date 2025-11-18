@@ -125,3 +125,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # RAKUTEN_APP_ID = os.environ.get("RAKUTEN_APP_ID")
 RAKUTEN_APP_ID = "1078327554581727238"
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'myapp:api_test'
+LOGOUT_REDIRECT_URL = 'login'
