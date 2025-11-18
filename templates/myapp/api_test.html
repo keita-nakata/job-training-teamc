@@ -1,15 +1,85 @@
-<form method="post">
-  {% csrf_token %}
-  <input type="text" name="keyword" value="{{ search_keyword|default:'' }}">
-  <button type="submit">検索</button>
-</form>
+<!-- myapp/templates/myapp/api_test.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>APIテスト</title>
+</head>
+<body>
+  <h1>楽天APIテスト</h1>
 
-{% if error_message %}
-  <p style="color:red">{{ error_message }}</p>
-{% endif %}
+  <!-- 楽天市場 検索フォーム -->
+  <section>
+    <h2>楽天市場で検索</h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="ichiba" />
+      <input
+        type="text"
+        name="keyword"
+        placeholder="キーワードを入力"
+        value="{{ ichiba_search_keyword|default:'' }}"
+      />
+      <button type="submit">楽天市場を検索</button>
+    </form>
 
-<ul>
-  {% for item in items %}
-    <li>{{ item.itemName }}</li>
-  {% endfor %}
-</ul>
+    {% if ichiba_error_message %}
+      <p style="color: red">{{ ichiba_error_message }}</p>
+    {% endif %}
+
+    {% if ichiba_items %}
+      <h3>検索結果（楽天市場）</h3>
+      <ul>
+        {% for item in ichiba_items %}
+          <li>
+            <a href="{{ item.itemUrl }}" target="_blank">
+              {{ item.itemName }}
+            </a>
+            <br />
+            価格: {{ item.itemPrice }} 円
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </section>
+
+  <hr />
+
+  <!-- 楽天ブックス 検索フォーム -->
+  <section>
+    <h2>楽天ブックスで検索</h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="books" />
+      <input
+        type="text"
+        name="keyword"
+        placeholder="本のタイトルなどを入力"
+        value="{{ books_search_keyword|default:'' }}"
+      />
+      <button type="submit">楽天ブックスを検索</button>
+    </form>
+
+    {% if books_error_message %}
+      <p style="color: red">{{ books_error_message }}</p>
+    {% endif %}
+
+    {% if books_items %}
+      <h3>検索結果（楽天ブックス）</h3>
+      <ul>
+        {% for book in books_items %}
+          <li>
+            <a href="{{ book.itemUrl }}" target="_blank">
+              {{ book.title }}
+            </a>
+            <br />
+            著者: {{ book.author }}<br />
+            出版社: {{ book.publisherName }}<br />
+            価格: {{ book.itemPrice }} 円
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </section>
+</body>
+</html>
