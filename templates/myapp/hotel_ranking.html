@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hotel Ranking - Rakuten Value Points</title>
+    <link rel="stylesheet" href="{% static 'css/landing.css' %}" />
+  </head>
+  <body>
+    <div class="page">
+      <div class="hero">
+        <h1 class="title">Rakuten Travel Hotel Ranking</h1>
+        <p class="subtitle">
+          View top-ranked hotels and complete today&apos;s hotel mission.
+        </p>
+
+        <div class="cta-box">
+          <p class="cta-text">
+            Current points: <strong>{{ user_points }}</strong><br />
+            Today’s missions:
+            Ichiba: {{ mission_status.ichiba|yesno:"Done,Not yet" }},
+            Hotel: {{ mission_status.hotel|yesno:"Done,Not yet" }},
+            Games: {{ mission_status.games|yesno:"Done,Not yet" }}
+          </p>
+
+          <!-- ジャンル選択（総合 / 温泉宿 / 高級） -->
+          <form method="get" style="margin-top: 8px;">
+            <label for="id_genre">Ranking genre</label>
+            <select name="genre" id="id_genre">
+              <option value="all" {% if selected_genre == "all" %}selected{% endif %}>Overall</option>
+              <option value="onsen" {% if selected_genre == "onsen" %}selected{% endif %}>Onsen hotels</option>
+              <option value="premium" {% if selected_genre == "premium" %}selected{% endif %}>Luxury hotels/ryokan</option>
+            </select>
+            <div class="button-row" style="margin-top: 12px;">
+              <button type="submit" class="btn btn-login">Show ranking</button>
+            </div>
+          </form>
+
+          {% if error_message %}
+          <p style="color: red; margin-top: 12px;">{{ error_message }}</p>
+          {% endif %}
+        </div>
+
+        {% if items %}
+<div class="cta-box" style="margin-top: 20px;">
+  <h3 class="subtitle">Hotel Ranking</h3>
+
+  <div class="hotel-list">
+    {% for hotel in items %}
+    <div class="hotel-card">
+      <div class="hotel-image-wrapper">
+        {% if hotel.hotelThumbnailUrl %}
+          <img src="{{ hotel.hotelThumbnailUrl }}" alt="{{ hotel.hotelName }}" class="hotel-image">
+          {% else %}
+          <img src="{% static 'img/hotel.jpg' %}" alt="No image available" class="hotel-image">
+        {% endif %}
+      </div>
+
+      <div class="hotel-info">
+        <div class="hotel-header-row">
+          <span class="hotel-rank-badge">#{{ hotel.rank }}</span>
+          <a
+  href="{% url 'myapp:rakuten_redirect' %}?url={{ hotel.hotelInformationUrl|urlencode }}&mission=hotel"
+  target="_blank"
+  class="task-link"
+>
+  #{{ hotel.rank }} {{ hotel.hotelName }}
+</a>
+        </div>
+
+        <div class="hotel-meta">
+          <span class="hotel-location">
+            {{ hotel.middleClassName }}
+          </span>
+          <span class="hotel-rating">
+            ★ {{ hotel.reviewAverage }} ({{ hotel.reviewCount }} reviews)
+          </span>
+        </div>
+
+        <div class="hotel-actions">
+          <a
+  href="{% url 'myapp:rakuten_redirect' %}?url={{ hotel.hotelInformationUrl|urlencode }}&mission=hotel"
+  target="_blank"
+  class="task-link"
+>
+            View plans
+          </a>
+          <a
+  href="{% url 'myapp:rakuten_redirect' %}?url={{ hotel.hotelInformationUrl|urlencode }}&mission=hotel"
+  target="_blank"
+  class="task-link"
+>
+            View reviews
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+
+        <div class="button-row" style="margin-top: 16px;">
+          <a href="{% url 'myapp:dashboard' %}" class="btn btn-login">Back to Dashboard</a>
+          <a href="{% url 'myapp:ichiba_search' %}" class="btn btn-login">Go to Ichiba</a>
+          <a href="{% url 'myapp:games_search' %}" class="btn btn-login">Go to Games</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

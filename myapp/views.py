@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 
 
 from .models import UserDailyMission, MISSION_CHOICES, UserProfile
-from .services.external_api import ichiba_item_search, books_search, games_search
+from .services.external_api import ichiba_item_search, books_search, games_search, hotel_ranking
 from .forms import SimpleSignUpForm
 
 User = get_user_model()
@@ -19,7 +19,7 @@ User = get_user_model()
 # points for each mission type
 POINTS_PER_MISSION = {
     "ichiba": 1,  # 楽天市場ミッション
-    "books": 1,   # 楽天ブックスミッション
+    "hotel": 1,   # 楽天トラベルミッション
     "games": 1,   # 楽天ゲームズミッション
 }
 
@@ -232,6 +232,107 @@ class RankingView(LoginRequiredMixin, TemplateView):
         context["ranking_list"] = ranking_list
         context["current_user_rank"] = current_user_rank
         return context
+    
+class BaseMissionView(LoginRequiredMixin, TemplateView):
+    """
+    ミッション共通のコンテキスト（今日の達成状況 + ユーザーポイント）を渡すためのベースクラス
+    """
+
+    def _add_mission_context(self, context):
+        today = timezone.localdate()
+        missions = {code: False for code, _ in MISSION_CHOICES}
+
+        qs = UserDailyMission.objects.filter(user=self.request.user, date=today)
+        for m in qs:
+            missions[m.mission_type] = m.completed
+
+        profile, _ = UserProfile.objects.get_or_create(user=self.request.user)
+        context.setdefault("user_points", profile.points)
+        context.setdefault("mission_status", missions)
+        return context
+
+
+class IchibaSearchView(BaseMissionView):
+    template_name = "myapp/ichiba_search.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.setdefault("items", [])
+        context.setdefault("search_keyword", None)
+        context.setdefault("error_message", None)
+        return self._add_mission_context(context)
+
+    def post(self, request, *args, **kwargs):
+        search_keyword = request.POST.get("keyword", "")
+        items, error_message = ichiba_item_search(search_keyword, hits=5)
+
+        context = self.get_context_data(
+            items=items,
+            search_keyword=search_keyword,
+            error_message=error_message,
+        )
+        return self.render_to_response(context)
+
+
+class BooksSearchView(BaseMissionView):
+    template_name = "myapp/books_search.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.setdefault("items", [])
+        context.setdefault("search_keyword", None)
+        context.setdefault("error_message", None)
+        return self._add_mission_context(context)
+
+    def post(self, request, *args, **kwargs):
+        search_keyword = request.POST.get("keyword", "")
+        items, error_message = books_search(search_keyword, hits=5)
+
+        context = self.get_context_data(
+            items=items,
+            search_keyword=search_keyword,
+            error_message=error_message,
+        )
+        return self.render_to_response(context)
+
+
+class GamesSearchView(BaseMissionView):
+    template_name = "myapp/games_search.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.setdefault("items", [])
+        context.setdefault("search_keyword", None)
+        context.setdefault("error_message", None)
+        return self._add_mission_context(context)
+
+    def post(self, request, *args, **kwargs):
+        search_keyword = request.POST.get("keyword", "")
+        items, error_message = games_search(search_keyword, hits=5)
+
+        context = self.get_context_data(
+            items=items,
+            search_keyword=search_keyword,
+            error_message=error_message,
+        )
+        return self.render_to_response(context)
+    
+class HotelRankingView(BaseMissionView):
+    template_name = "myapp/hotel_ranking.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # ?genre=all / ?genre=onsen / ?genre=premium などで切り替え
+        genre = self.request.GET.get("genre", "all")
+
+        items, error_message = hotel_ranking(genre=genre)
+
+        context.setdefault("items", items)
+        context.setdefault("error_message", error_message)
+        context.setdefault("selected_genre", genre)
+
+        return self._add_mission_context(context)
 
 def landing(request):
     return render(request, "myapp/landing.html")
@@ -260,8 +361,41 @@ def login_view(request):
 
 @login_required(login_url="myapp:login")
 def dashboard(request):
-    # for now, just a placeholder page
-    return render(request, "myapp/dashboard.html")
+    today = timezone.localdate()
+
+    # 今日のミッション達成状況 { "ichiba": True/False, "hotel": ..., "games": ... }
+    missions = {code: False for code, _ in MISSION_CHOICES}
+    qs = UserDailyMission.objects.filter(user=request.user, date=today)
+    for m in qs:
+        missions[m.mission_type] = m.completed
+        
+    # 今日完了したタスク数
+    completed_mission_num = sum(1 for done in missions.values() if done)
+    # ミッション総数（今は 3）
+    total_missions = len(MISSION_CHOICES)
+
+    # ユーザープロフィール取得
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+
+    # 各タスクの報酬ポイント
+    mission_rewards = {
+        "ichiba": POINTS_PER_MISSION.get("ichiba", 0),
+        "hotel": POINTS_PER_MISSION.get("hotel", 0), 
+        "games": POINTS_PER_MISSION.get("games", 0),
+    }
+    
+    print("DEBUG completed_mission_num =", completed_mission_num)
+
+
+    context = {
+        "mission_status": missions,
+        "mission_rewards": mission_rewards,
+        "user_points": profile.points,
+        "DAILY_MISSION_BONUS": DAILY_MISSION_BONUS,
+        "completed_mission_num": completed_mission_num, 
+        "total_missions": total_missions, 
+    }
+    return render(request, "myapp/dashboard.html", context)
 
 @login_required(login_url="myapp:login")
 def logout_view(request):

@@ -11,7 +11,6 @@
 			<!-- Top bar -->
 			<header class="dash-header">
 				<div class="dash-header-left">
-					<!-- reuse same logo image -->
 					<img src="{% static 'img/logo.png' %}" alt="Rakuten Value Points" class="dash-logo" />
 					<span class="dash-title-text">Rakuten Value Points</span>
 				</div>
@@ -20,7 +19,6 @@
 					<span class="dash-username-label">User:</span>
 					<span class="dash-username">{{ user.username }}</span>
 
-					<!-- 🔽 ここからログアウトボタン -->
 					<form
 						method="post"
 						action="{% url 'myapp:logout' %}"
@@ -29,13 +27,11 @@
 						{% csrf_token %}
 						<button type="submit" class="dash-logout-button">Log out</button>
 					</form>
-					<!-- 🔼 ここまで -->
 				</div>
 			</header>
 
 			<!-- Main content: tasks table + current score -->
 			<main class="dash-main">
-				<!-- Tasks / table -->
 				<section class="dash-tasks-card">
 					<h2 class="dash-section-title">Task TODO</h2>
 
@@ -44,47 +40,53 @@
 							<tr>
 								<th>Task TODO</th>
 								<th>Description</th>
-								<th>Affiliate</th>
-								<th>Score</th>
+								<th>Reward</th>
+								<th>Completed</th>
 							</tr>
 						</thead>
 						<tbody>
-							<!-- Row 1 -->
+							<!-- Row 1: Ichiba -->
 							<tr>
 								<td>
-									<!-- later backend can replace # with Rakuten Ichiba search URL -->
-									<a href="#" class="task-link">Ichiba Item Search</a>
+									<a href="{% url 'myapp:ichiba_search' %}" class="task-link">
+										Ichiba Item Search
+									</a>
 								</td>
 								<td>Search for items</td>
-								<td class="center-cell">
-									<!-- unchecked by default; backend can mark checked -->
-									<input type="checkbox" disabled />
+								<td class="center-cell">{{ mission_rewards.ichiba }} pt</td>
+								<td class="center-cell completed-cell">
+									<input
+										type="checkbox"
+										disabled
+										{% if mission_status.ichiba %}checked{% endif %}
+									/>
 								</td>
-								<td class="center-cell">0</td>
 							</tr>
 
-							<!-- Row 2 -->
+							<!-- Row 2: Hotels -->
 							<tr>
 								<td>
-									<a href="#" class="task-link">Book Item Search</a>
+									<a href="{% url 'myapp:hotel_ranking' %}" class="task-link"> Hotel Ranking </a>
 								</td>
-								<td>Search for books</td>
-								<td class="center-cell">
-									<input type="checkbox" disabled />
+								<td>View top-ranked hotels</td>
+								<td class="center-cell">{{ mission_rewards.hotel }} pt</td>
+								<td class="center-cell completed-cell">
+									<input type="checkbox" disabled {% if mission_status.hotel %}checked{% endif %} />
 								</td>
-								<td class="center-cell">0</td>
 							</tr>
 
-							<!-- Row 3 -->
+							<!-- Row 3: Games -->
 							<tr>
 								<td>
-									<a href="#" class="task-link">Rakuten Game Search</a>
+									<a href="{% url 'myapp:games_search' %}" class="task-link">
+										Rakuten Game Search
+									</a>
 								</td>
 								<td>Search for games</td>
-								<td class="center-cell">
-									<input type="checkbox" disabled />
+								<td class="center-cell">{{ mission_rewards.games }} pt</td>
+								<td class="center-cell completed-cell">
+									<input type="checkbox" disabled {% if mission_status.games %}checked{% endif %} />
 								</td>
-								<td class="center-cell">0</td>
 							</tr>
 						</tbody>
 					</table>
@@ -93,21 +95,21 @@
 				<!-- Current score card -->
 				<aside class="dash-score-card">
 					<h3 class="dash-section-title">Current Score</h3>
-
-					<!-- SVG star + centered score -->
 					<div class="star-wrapper">
 						<svg class="star-icon" viewBox="0 0 100 100" aria-hidden="true">
 							<polygon points="50,5 61,38 95,38 67,58 78,91 50,72 22,91 33,58 5,38 39,38" />
 						</svg>
-						<span class="star-score">0</span>
+						<span class="star-score">{{ user_points }}</span>
 					</div>
 				</aside>
 			</main>
 
-			<!-- Today's tasks footer -->
 			<section class="dash-footer">
 				<h3 class="dash-footer-title">Today's Tasks</h3>
-				<p class="dash-footer-text">+1 points for completing daily task (3/3)</p>
+				<p class="dash-footer-text">
+					+{{ DAILY_MISSION_BONUS|default:1 }} points for completing all daily tasks
+					({{completed_mission_num }}/{{ total_missions }})
+				</p>
 			</section>
 		</div>
 	</body>

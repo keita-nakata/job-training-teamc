@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Games Search - Rakuten Value Points</title>
+		<link rel="stylesheet" href="{% static 'css/landing.css' %}" />
+	</head>
+	<body>
+		<div class="page">
+			<div class="hero">
+				<h1 class="title">Rakuten Game Search</h1>
+				<p class="subtitle">Search games and complete today&apos;s mission.</p>
+
+				<div class="cta-box">
+					<p class="cta-text">
+						Current points: <strong>{{ user_points }}</strong><br />
+						Today’s missions: Ichiba: {{ mission_status.ichiba|yesno:"Done,Not yet" }}, Games: {{
+						mission_status.games|yesno:"Done,Not yet" }}
+					</p>
+
+					<form method="post">
+						{% csrf_token %}
+						<p>
+							<label for="id_keyword">Keyword</label>
+							<input
+								type="text"
+								name="keyword"
+								id="id_keyword"
+								value="{{ search_keyword|default_if_none:'' }}"
+							/>
+						</p>
+						<div class="button-row" style="margin-top: 12px">
+							<button type="submit" class="btn btn-login">Search</button>
+						</div>
+					</form>
+
+					{% if error_message %}
+					<p style="color: red; margin-top: 12px">{{ error_message }}</p>
+					{% endif %}
+				</div>
+
+				{% if items %}
+				<div class="cta-box" style="margin-top: 20px">
+					<h3 class="subtitle">Search Results</h3>
+					<ul style="text-align: left; padding-left: 18px">
+						{% for item in items %}
+						<li style="margin-bottom: 8px">
+							<a
+								href="{% url 'myapp:rakuten_redirect' %}?url={{ item.itemUrl|urlencode }}&mission=games"
+								target="_blank"
+								class="task-link"
+							>
+								{{ item.itemName }}
+							</a>
+							<br />
+							<span style="font-size: 13px; color: #555"> {{ item.itemPrice }} yen </span>
+						</li>
+						{% endfor %}
+					</ul>
+				</div>
+				{% endif %}
+
+				<div class="button-row" style="margin-top: 16px">
+					<a href="{% url 'myapp:dashboard' %}" class="btn btn-login">Back to Dashboard</a>
+					<a href="{% url 'myapp:ichiba_search' %}" class="btn btn-login">Go to Ichiba</a>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

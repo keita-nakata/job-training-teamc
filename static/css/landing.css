@@ -219,6 +219,26 @@ body {
     font-weight: 600;
 }
 
+/* Completed 列のセル（チェック状態）を強調表示 */
+.dash-table td.completed-cell {
+    background-color: #f0fdf4;  /* 薄いグリーン */
+}
+
+/* Completed 列のチェックボックスを目立たせる */
+.dash-table td.completed-cell input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    transform: scale(1.2);       /* ちょっと大きく */
+    accent-color: #22c55e;       /* 対応ブラウザならチェック色をグリーンに */
+    cursor: default;
+}
+
+/* チェック済みのときは少しオーラっぽく */
+.dash-table td.completed-cell input[type="checkbox"]:checked {
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+    border-radius: 4px;
+}
+
 .center-cell {
     text-align: center;
 }
@@ -312,3 +332,113 @@ body {
     transform: translateY(-1px);
 }
 
+/* ================================
+   HOTEL RANKING CARDS
+   ================================ */
+
+.hotel-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.hotel-card {
+    display: flex;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    align-items: stretch;
+}
+
+.hotel-image-wrapper {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hotel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hotel-image-placeholder {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.hotel-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.hotel-header-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.hotel-rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.hotel-name-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2933;
+    text-decoration: none;
+}
+
+.hotel-name-link:hover {
+    text-decoration: underline;
+}
+
+.hotel-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.hotel-rating {
+    font-weight: 600;
+}
+
+.hotel-actions {
+    margin-top: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.hotel-link-small {
+    font-size: 12px;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.hotel-link-small:hover {
+    text-decoration: underline;
+}
