@@ -1,14 +1,18 @@
 # myapp/views.py
 from django.views import View
 from django.views.generic import TemplateView
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.http import Http404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login as auth_login, logout as auth_logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
+
 
 from .models import UserDailyMission, MISSION_CHOICES, UserProfile
 from .services.external_api import ichiba_item_search, books_search, games_search
+from .forms import SimpleSignUpForm
 
 User = get_user_model()
 
@@ -228,3 +232,45 @@ class RankingView(LoginRequiredMixin, TemplateView):
         context["ranking_list"] = ranking_list
         context["current_user_rank"] = current_user_rank
         return context
+
+def landing(request):
+    return render(request, "myapp/landing.html")
+
+
+def signup_view(request):
+    if request.method == "POST":
+        form = SimpleSignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()       # saves username + password in database
+            auth_login(request, user)
+            return redirect("myapp:dashboard")
+    else:
+        form = SimpleSignUpForm()
+    return render(request, "myapp/signup.html", {"form": form})
+
+
+def login_view(request):
+    form = AuthenticationForm(request, data=request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        user = form.get_user()
+        auth_login(request, user)
+        return redirect("myapp:dashboard")
+    return render(request, "myapp/login.html", {"form": form})
+
+
+@login_required(login_url="myapp:login")
+def dashboard(request):
+    # for now, just a placeholder page
+    return render(request, "myapp/dashboard.html")
+
+@login_required(login_url="myapp:login")
+def logout_view(request):
+    """
+    シンプルなログアウトビュー。
+    POSTで呼ばれたらログアウトして、ログインページに飛ばす。
+    """
+    if request.method == "POST":
+        auth_logout(request)
+        return redirect("myapp:login")
+    # GETで来た場合はダッシュボードに戻す（直接叩かれたとき用）
+    return redirect("myapp:dashboard")

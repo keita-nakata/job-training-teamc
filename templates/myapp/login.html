@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Login - Rakuten Value Points</title>
+		<link rel="stylesheet" href="{% static 'css/landing.css' %}" />
+	</head>
+	<body>
+		<div class="page">
+			<div class="hero">
+				<h1 class="title">Login</h1>
+				<p class="subtitle">Enter your username and password.</p>
+
+				<div class="cta-box">
+					<form method="post">
+						{% csrf_token %} {{ form.as_p }}
+						<div class="button-row" style="margin-top: 12px">
+							<button type="submit" class="btn btn-login">Login</button>
+						</div>
+					</form>
+
+					<!-- 🔽 ここから追加部分（Signupへのボタン） -->
+					<div class="button-row" style="margin-top: 16px; text-align: center">
+						<span style="font-size: 14px; color: #555">Don’t have an account?</span><br />
+						<a
+							href="{% url 'myapp:signup' %}"
+							class="btn btn-signup"
+							style="margin-top: 8px; display: inline-block"
+						>
+							Sign up
+						</a>
+					</div>
+					<!-- 🔼 ここまで -->
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>UniLife Budget Saver</title>
+    <link rel="stylesheet" href="{% static 'css/landing.css' %}">
+</head>
+<body>
+    <div class="page">
+        <div class="hero">
+            <!-- Logo -->
+            <img src="{% static 'img/logo.png' %}" alt="UniLife Budget Finder" class="logo">
+
+            <!-- Title -->
+            <h1 class="title">Rakuten Value Points</h1>
+            <p class="subtitle">Search and earn — maximize your Rakuten Value Points with every click.</p>
+
+            <!-- Colorful box with buttons -->
+            <div class="cta-box">
+                <p class="cta-text">Get started as a valueable customer:</p>
+                <div class="button-row">
+                    <a href="{% url 'myapp:signup' %}" class="btn btn-signup">Sign up</a>
+                    <a href="{% url 'myapp:login' %}" class="btn btn-login">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

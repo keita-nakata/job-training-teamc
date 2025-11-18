@@ -1,0 +1,314 @@
+/* ================================
+   GLOBAL (landing + signup + login)
+   ================================ */
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-color: #f5f7fb;
+}
+
+/* Shared page wrapper for landing / signup / login */
+.page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 16px;
+}
+
+.hero {
+    text-align: center;
+}
+
+/* Logo on landing page */
+.logo {
+    max-width: 420px;
+    width: 100%;
+}
+
+/* Title + subtitle */
+.title {
+    margin-top: 24px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #222;
+}
+
+.subtitle {
+    margin-top: 8px;
+    font-size: 15px;
+    color: #555;
+}
+
+/* Colorful box (landing + signup + login) */
+.cta-box {
+    margin: 32px auto 0;
+    max-width: 420px;
+    padding: 18px 20px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #fdfbfb, #ebedff);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(109, 126, 255, 0.25);
+}
+
+.cta-text {
+    margin: 0 0 14px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Buttons */
+.button-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 22px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition:
+        transform 0.1s ease,
+        box-shadow 0.1s ease,
+        background 0.1s ease;
+}
+
+/* Primary (Sign up) – Rakuten-ish red */
+.btn-signup {
+    background: linear-gradient(135deg, #ff4b4b, #ff7a7a);
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(255, 75, 75, 0.4);
+}
+
+/* Secondary (Login) */
+.btn-login {
+    background: #ffffff;
+    color: #444;
+    border: 1px solid rgba(120, 132, 255, 0.6);
+}
+
+/* Hover effect */
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Simple form styling for signup/login */
+.cta-box form p {
+    margin-bottom: 12px;
+    text-align: left;
+}
+
+.cta-box label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: #333;
+}
+
+.cta-box input[type="text"],
+.cta-box input[type="password"] {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+
+
+/* ================================
+   DASHBOARD LAYOUT
+   ================================ */
+
+.dash-page {
+    padding: 32px 60px;
+    background-color: #f5f7fb;
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 16px;  /* bigger base font on dashboard */
+}
+
+/* Header (logo + username) */
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.dash-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dash-logo {
+    height: 90px; /* big logo */
+}
+
+.dash-title-text {
+    font-weight: 700;
+    font-size: 22px;
+}
+
+.dash-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #efe7ff;
+    padding: 8px 14px;
+    border-radius: 999px;
+}
+
+.dash-username-label {
+    font-size: 15px;
+    color: #555;
+}
+
+.dash-username {
+    font-weight: 600;
+    font-size: 17px;
+}
+
+/* Main grid: table left, score card right */
+.dash-main {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+/* Tasks card */
+.dash-tasks-card {
+    background: #fff5f5;
+    border-radius: 18px;
+    padding: 20px 22px;
+}
+
+.dash-section-title {
+    margin: 0 0 14px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* Table */
+.dash-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+}
+
+.dash-table th,
+.dash-table td {
+    padding: 14px 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.dash-table th {
+    text-align: left;
+    font-weight: 600;
+}
+
+.center-cell {
+    text-align: center;
+}
+
+/* Task links (blue) */
+.task-link {
+    color: #2f6bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.task-link:hover {
+    text-decoration: underline;
+}
+
+/* Score card */
+.dash-score-card {
+    background: #fff5f5;
+    border-radius: 18px;
+    padding: 20px 22px;
+    text-align: center;
+}
+
+/* ----- Current Score Star (SVG) ----- */
+.star-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 16px auto 0;      /* center inside the card */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.star-icon {
+    width: 120px;
+    height: 120px;
+    display: block;
+}
+
+/* make the SVG star red */
+.star-icon polygon {
+    fill: red;
+}
+
+.star-score {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);   /* PERFECT center */
+    color: white;
+    font-weight: 700;
+    font-size: 32px;
+}
+
+/* Footer / Today's tasks */
+.dash-footer {
+    margin-top: 28px;
+    background: #fff7f7;
+    border-radius: 18px;
+    padding: 18px 20px;
+}
+
+.dash-footer-title {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.dash-footer-text {
+    margin: 0;
+    font-size: 16px;
+    color: #e53935;
+    font-weight: 600;
+}
+
+.dash-logout-button {
+    padding: 6px 12px;
+    margin-left: 8px;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+}
+
+.dash-logout-button:hover {
+    background: #f3f4f6;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
+    transform: translateY(-1px);
+}
+
