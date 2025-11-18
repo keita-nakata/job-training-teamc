@@ -5,11 +5,22 @@ from django.shortcuts import redirect
 from django.http import Http404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
+from django.contrib.auth import get_user_model
 
 from .models import UserDailyMission, MISSION_CHOICES, UserProfile
 from .services.external_api import ichiba_item_search, books_search, games_search
 
-DAILY_MISSION_BONUS = 50
+User = get_user_model()
+
+# points for each mission type
+POINTS_PER_MISSION = {
+    "ichiba": 1,  # 楽天市場ミッション
+    "books": 1,   # 楽天ブックスミッション
+    "games": 1,   # 楽天ゲームズミッション
+}
+
+# bonus points for completing all daily missions
+DAILY_MISSION_BONUS = 1
 
 
 class ApiTestView(LoginRequiredMixin, TemplateView):
@@ -108,7 +119,8 @@ class RakutenRedirectView(LoginRequiredMixin, View):
     """
     検索結果リンククリック時のビュー。
     ・該当ミッションを completed=True にする
-    ・3種類すべて completed になった日に初めてボーナス付与
+    ・そのミッションを初めて達成したときに基本ポイントを付与
+    ・3種類すべて completed になった日に初めてボーナスを付与
     """
 
     def get(self, request, *args, **kwargs):
@@ -133,12 +145,29 @@ class RakutenRedirectView(LoginRequiredMixin, View):
                     "completed_at": timezone.now(),
                 },
             )
-            if not created and not mission.completed:
+
+            newly_completed = False
+
+            if created:
+                # レコード新規作成 = その時点で達成扱い
+                newly_completed = True
+            elif not mission.completed:
+                # 既存レコードだがまだ未達成 → 今回のクリックで達成
                 mission.completed = True
                 mission.completed_at = timezone.now()
                 mission.save(update_fields=["completed", "completed_at"])
+                newly_completed = True
 
-            # ② 今日の3ミッションが全て completed かチェック
+            # プロフィール取得（ポイント管理用）
+            profile, _ = UserProfile.objects.get_or_create(user=request.user)
+
+            # ② 初めて達成したミッションには基本ポイントを付与
+            if newly_completed:
+                base_point = POINTS_PER_MISSION.get(mission_type, 0)
+                if base_point > 0:
+                    profile.add_points(base_point)
+
+            # ③ 今日の3ミッションが全て completed かチェック
             all_completed = True
             for code, _label in MISSION_CHOICES:
                 exists = UserDailyMission.objects.filter(
@@ -151,16 +180,51 @@ class RakutenRedirectView(LoginRequiredMixin, View):
                     all_completed = False
                     break
 
-            # ③ すべて completed かつ、今日まだボーナスをあげていなければポイント付与
-            if all_completed:
-                profile, _ = UserProfile.objects.get_or_create(user=request.user)
-
-                if profile.last_mission_bonus_date != today:
-                    # 初めての3ミッション達成 → ボーナス付与
-                    if DAILY_MISSION_BONUS > 0:
-                        profile.add_points(DAILY_MISSION_BONUS)
-                    profile.last_mission_bonus_date = today
-                    # add_points 内でも save しているので、ここも合わせて更新
-                    profile.save(update_fields=["last_mission_bonus_date"])
+            # ④ すべて completed かつ、今日まだボーナスをあげていなければボーナス付与
+            if all_completed and profile.last_mission_bonus_date != today:
+                if DAILY_MISSION_BONUS > 0:
+                    profile.add_points(DAILY_MISSION_BONUS)
+                profile.last_mission_bonus_date = today
+                profile.save(update_fields=["last_mission_bonus_date"])
 
         return redirect(url)
+
+    
+class RankingView(LoginRequiredMixin, TemplateView):
+    """
+    全ユーザのポイントランキングを表示するページ。
+    """
+    template_name = "myapp/ranking.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # まず全 UserProfile を取得して user_id -> points の辞書にする
+        profiles = {
+            p.user_id: p.points
+            for p in UserProfile.objects.select_related("user")
+        }
+
+        # 全ユーザを取得し、「ポイント（なければ0）」付きのリストを作成
+        users = User.objects.all()
+        ranking_list = []
+        for user in users:
+            points = profiles.get(user.id, 0)
+            ranking_list.append({
+                "user": user,
+                "points": points,
+            })
+
+        # ポイント降順、同点ならユーザーID昇順でソート
+        ranking_list.sort(key=lambda x: (-x["points"], x["user"].id))
+
+        # 自分の順位も計算しておく（1位スタート）
+        current_user_rank = None
+        for idx, entry in enumerate(ranking_list, start=1):
+            if entry["user"] == self.request.user:
+                current_user_rank = idx
+                break
+
+        context["ranking_list"] = ranking_list
+        context["current_user_rank"] = current_user_rank
+        return context

@@ -1,0 +1,178 @@
+/* =========================
+   全体レイアウト
+   ========================= */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f5f7fb;
+  color: #222;
+}
+
+.ranking-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 24px 28px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+/* =========================
+   見出し・ヘッダー部分
+   ========================= */
+.ranking-title {
+  margin: 0 0 8px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.ranking-subtitle {
+  margin: 0 0 24px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.ranking-my-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+.ranking-my-info span.label {
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.ranking-my-info span.value {
+  font-weight: 700;
+  color: #111827;
+}
+
+.ranking-my-info span.rank {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =========================
+   テーブル
+   ========================= */
+.ranking-table-wrapper {
+  overflow-x: auto;
+}
+
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 14px;
+}
+
+.ranking-table thead {
+  background: #f3f4f6;
+}
+
+.ranking-table th,
+.ranking-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ranking-table th {
+  font-weight: 600;
+  color: #4b5563;
+  font-size: 13px;
+}
+
+.ranking-table tbody tr:nth-child(2n) {
+  background: #fbfbfe;
+}
+
+.ranking-table tbody tr:hover {
+  background: #eef2ff;
+}
+
+/* =========================
+   順位バッジ
+   ========================= */
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #111827;
+  background: #e5e7eb;
+}
+
+/* 1〜3位はメダルっぽく色分け */
+.ranking-table tbody tr:nth-child(1) .rank-badge {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.ranking-table tbody tr:nth-child(2) .rank-badge {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.ranking-table tbody tr:nth-child(3) .rank-badge {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+/* =========================
+   自分の行の強調
+   ========================= */
+.ranking-table tbody tr.is-current-user {
+  background: #fff7e6;
+  box-shadow: 0 0 0 1px #fed7aa inset;
+}
+
+.username-me {
+  font-weight: 700;
+  color: #111827;
+}
+
+/* =========================
+   戻るボタン
+   ========================= */
+.ranking-back {
+  margin-top: 20px;
+}
+
+.ranking-back a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  text-decoration: none;
+  color: #374151;
+  font-size: 13px;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+}
+
+.ranking-back a:hover {
+  background: #f3f4f6;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
+  transform: translateY(-1px);
+}

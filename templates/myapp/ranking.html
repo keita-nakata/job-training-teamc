@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Points Ranking</title>
+  <link rel="stylesheet" href="{% static 'css/ranking.css' %}">
+</head>
+<body>
+  <div class="ranking-container">
+    <h1 class="ranking-title">Points Ranking</h1>
+    <p class="ranking-subtitle">Complete missions and compete with other users.</p>
+
+    <div class="ranking-my-info">
+      <span class="label">Your Points:</span>
+      <span class="value">
+        {{ request.user.profile.points|default:0 }} pt
+      </span>
+      {% if current_user_rank %}
+        <span class="rank">Rank: {{ current_user_rank }}</span>
+      {% endif %}
+    </div>
+
+    <div class="ranking-table-wrapper">
+      <table class="ranking-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>User</th>
+            <th>Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in ranking_list %}
+            <tr class="{% if entry.user == request.user %}is-current-user{% endif %}">
+              <td>
+                <span class="rank-badge">{{ forloop.counter }}</span>
+              </td>
+              <td>
+                {% if entry.user == request.user %}
+                  <span class="username-me">{{ entry.user.username }} (You)</span>
+                {% else %}
+                  {{ entry.user.username }}
+                {% endif %}
+              </td>
+              <td>{{ entry.points }} pt</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="3">No users found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ranking-back">
+      <a href="{% url 'api_test' %}">← Back to Mission Page</a>
+    </div>
+  </div>
+</body>
+</html>
