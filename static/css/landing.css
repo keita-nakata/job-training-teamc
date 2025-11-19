@@ -23,8 +23,8 @@ body {
 
 /* Logo on landing page */
 .logo {
-    max-width: 420px;
-    width: 100%;
+    width: 300px;
+    margin: 0 auto;
 }
 
 /* Title + subtitle */
@@ -153,7 +153,8 @@ body {
 }
 
 .dash-logo {
-    height: 90px; /* big logo */
+    width: 150px;
+    height: auto;
 }
 
 .dash-title-text {
@@ -294,6 +295,48 @@ body {
     font-size: 32px;
 }
 
+/* Rank Badge */
+.rank-badge-wrapper {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.rank-label {
+    display: block;
+    font-size: 16px;      /* ← 14px → 16px にアップ */
+    font-weight: 600;     /* 少し太く */
+    color: #333;
+    margin-bottom: 8px;   /* ちょっと余白を増やす */
+    letter-spacing: 0.03em;
+}
+
+.rank-badge {
+    display: inline-block;
+    padding: 8px 28px;    /* ← パディングを増やしてバッジ自体を大きく */
+    border-radius: 999px;
+    font-size: 18px;      /* ← 14px → 18px にアップ */
+    font-weight: 700;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);  /* ちょっと立体感 */
+}
+
+/* Bronze */
+.rank-bronze {
+    background-color: #cd7f32;
+}
+
+/* Silver */
+.rank-silver {
+    background-color: #c0c0c0;
+    color: #333;
+}
+
+/* Gold */
+.rank-gold {
+    background-color: #d4af37;
+}
+
+
 /* Footer / Today's tasks */
 .dash-footer {
     margin-top: 28px;
@@ -331,6 +374,63 @@ body {
     box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
     transform: translateY(-1px);
 }
+
+/* ================================
+   DAILY MISSION COMPLETE MODAL
+   ================================ */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.4); /* dark translucent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 24px 28px;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.25);
+}
+
+.modal-title {
+    margin: 0 0 12px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.modal-message {
+    margin: 0 0 20px;
+    font-size: 15px;
+    color: #374151;
+    line-height: 1.6;
+}
+
+.modal-close-button {
+    padding: 10px 26px;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg, #ff4b4b, #ff7a7a);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(255, 75, 75, 0.45);
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.modal-close-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(255, 75, 75, 0.55);
+}
+
 
 /* ================================
    HOTEL RANKING CARDS

@@ -55,11 +55,7 @@
 								<td>Search for items</td>
 								<td class="center-cell">{{ mission_rewards.ichiba }} pt</td>
 								<td class="center-cell completed-cell">
-									<input
-										type="checkbox"
-										disabled
-										{% if mission_status.ichiba %}checked{% endif %}
-									/>
+									<input type="checkbox" disabled {% if mission_status.ichiba %}checked{% endif %} />
 								</td>
 							</tr>
 
@@ -101,8 +97,27 @@
 						</svg>
 						<span class="star-score">{{ user_points }}</span>
 					</div>
+
+					<div class="rank-badge-wrapper">
+						<span class="rank-label">Rank</span>
+						<div class="rank-badge rank-{{ rank|lower }}">{{ rank|upper }}</div>
+					</div>
 				</aside>
 			</main>
+
+			{# ✅ all missions completed → show modal #}
+			{% if completed_mission_num == total_missions and total_missions > 0 %}
+			<div id="daily-complete-modal" class="modal-overlay">
+				<div class="modal-content">
+					<h2 class="modal-title">Congratulations! 🎉</h2>
+					<p class="modal-message">
+						You have completed all of today&apos;s tasks!<br />
+						A bonus of <strong>{{ DAILY_MISSION_BONUS }}</strong> points has been added to your account.
+					</p>
+					<button id="modal-close-btn" class="modal-close-button">Close</button>
+				</div>
+			</div>
+			{% endif %}
 
 			<section class="dash-footer">
 				<h3 class="dash-footer-title">Today's Tasks</h3>
@@ -112,5 +127,24 @@
 				</p>
 			</section>
 		</div>
+		{# ✅ simple JS for closing the modal #}
+		<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			const modal = document.getElementById("daily-complete-modal");
+			if (!modal) return;
+
+			const closeBtn = document.getElementById("modal-close-btn");
+
+			function hideModal() {
+				modal.style.display = "none";
+			}
+
+			closeBtn.addEventListener("click", hideModal);
+			modal.addEventListener("click", function (e) {
+				// close when clicking the dark background
+				if (e.target === modal) hideModal();
+			});
+		});
+		</script>
 	</body>
 </html>

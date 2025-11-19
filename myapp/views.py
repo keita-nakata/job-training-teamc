@@ -24,7 +24,7 @@ POINTS_PER_MISSION = {
 }
 
 # bonus points for completing all daily missions
-DAILY_MISSION_BONUS = 1
+DAILY_MISSION_BONUS = 5
 
 
 class ApiTestView(LoginRequiredMixin, TemplateView):
@@ -358,6 +358,13 @@ def login_view(request):
         return redirect("myapp:dashboard")
     return render(request, "myapp/login.html", {"form": form})
 
+def get_user_rank(points: int) -> str:
+    if points >= 5:
+        return "Gold"
+    elif points >= 2:
+        return "Silver"
+    else:
+        return "Bronze"
 
 @login_required(login_url="myapp:login")
 def dashboard(request):
@@ -376,6 +383,8 @@ def dashboard(request):
 
     # ユーザープロフィール取得
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    
+    rank = get_user_rank(profile.points)
 
     # 各タスクの報酬ポイント
     mission_rewards = {
@@ -394,6 +403,7 @@ def dashboard(request):
         "DAILY_MISSION_BONUS": DAILY_MISSION_BONUS,
         "completed_mission_num": completed_mission_num, 
         "total_missions": total_missions, 
+        "rank": rank,
     }
     return render(request, "myapp/dashboard.html", context)
 

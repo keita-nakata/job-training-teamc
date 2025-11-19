@@ -15,13 +15,13 @@
         </p>
 
         <div class="cta-box">
-          <p class="cta-text">
+          <!-- <p class="cta-text">
             Current points: <strong>{{ user_points }}</strong><br />
             Today’s missions:
             Ichiba: {{ mission_status.ichiba|yesno:"Done,Not yet" }},
             Hotel: {{ mission_status.hotel|yesno:"Done,Not yet" }},
             Games: {{ mission_status.games|yesno:"Done,Not yet" }}
-          </p>
+          </p> -->
 
           <!-- ジャンル選択（総合 / 温泉宿 / 高級） -->
           <form method="get" style="margin-top: 8px;">
@@ -103,8 +103,8 @@
 
         <div class="button-row" style="margin-top: 16px;">
           <a href="{% url 'myapp:dashboard' %}" class="btn btn-login">Back to Dashboard</a>
-          <a href="{% url 'myapp:ichiba_search' %}" class="btn btn-login">Go to Ichiba</a>
-          <a href="{% url 'myapp:games_search' %}" class="btn btn-login">Go to Games</a>
+          <!-- <a href="{% url 'myapp:ichiba_search' %}" class="btn btn-login">Go to Ichiba</a> -->
+          <!-- <a href="{% url 'myapp:games_search' %}" class="btn btn-login">Go to Games</a> -->
         </div>
       </div>
     </div>
