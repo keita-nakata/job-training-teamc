@@ -1,3 +1,9 @@
+
+
+Github Repository: https://github.com/keita-nakata/job-training-teamc
+
+# Important
+
 # Django Project Setup
 
 This guide explains how to set up this Django project on your local machine.
